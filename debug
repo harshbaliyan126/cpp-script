@@ -1,0 +1,33 @@
+#!/bin/bash
+
+trap "{ rm -f .compiler_report; }" SIGINT SIGTERM EXIT
+FILE_EXTENSION="$(echo "$1" | sed "s/.*[^cpp]//g")"
+FILE_NAME="$(echo "$1" | sed "s/\(.*\).cpp/\1/g")"
+
+red='\033[0;31m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+green='\033[0;32m'
+blue='\033[0;34m'
+BLUE='\033[1;34m'
+cyan='\033[0;36m'
+CYAN='\033[1;36m'
+NC='\033[0m'
+
+if [[ "${FILE_EXTENSION}" = "cpp" ]]; then
+
+    COMPILER="g++ -std=c++20 -Wshadow -Wall $FILE_NAME.cpp -o $FILE_NAME -g3 -fsanitize=address -fsanitize=undefined -DLOCAL 2> .compiler_report"
+    echo "$COMPILER" | sh
+    if [ $? -ne 0 ]
+    then
+      echo -e " ${RED}X Compilation Error${NC}";
+      bat .compiler_report;
+      exit 1;
+    fi
+
+    echo -e " ${GREEN}* Successful compilation!${NC}";
+    echo
+
+fi
+
+# ./$FILE_NAME  
