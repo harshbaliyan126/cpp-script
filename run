@@ -1,0 +1,23 @@
+#!/bin/bash
+
+trap "{ rm -f .compiler_report; }" SIGINT SIGTERM EXIT
+FILE_EXTENSIOn="$(echo "$1" | sed "s/.*[^cpp]//g")"
+FILE_NAME="$(echo "$1" | sed "s/\(.*\).cpp/\1/g")"
+
+red='\033[0;31m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+green='\033[0;32m'
+blue='\033[0;34m'
+BLUE='\033[1;34m'
+cyan='\033[0;36m'
+CYAN='\033[1;36m'
+NC='\033[0m'
+
+if [[ "${FILE_EXTENSIOn}" = "cpp" ]]; then
+    ./$FILE_NAME > .output
+    echo -e " ${CYAN}Output${NC}";
+    bat .output
+fi
+
+# ./$FILE_NAME
